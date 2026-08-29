@@ -1,0 +1,103 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Lato:ital,wght@0,300;0,400;0,700;1,300;1,400&display=swap');
+@import 'tailwindcss';
+
+/* ──────────────────────────────────────────────
+   Palette — pale butter-yellow / cream, warm ink
+   ────────────────────────────────────────────── */
+@theme {
+  /* Surfaces */
+  --color-cream: #fefbf1; /* page background */
+  --color-cream-2: #fbf6e4; /* alternating section */
+  --color-cream-3: #f4eeda; /* cards / placeholders */
+  --color-nav: #faf4e2; /* navbar (a touch deeper than the page) */
+  --color-nav-solid: #f7f0d9; /* navbar once scrolled */
+
+  /* Ink */
+  --color-ink: #3d3527;
+  --color-ink-soft: #7d6f57;
+
+  /* Accents */
+  --color-gold: #ab8942;
+  --color-gold-deep: #856828;
+  --color-line: #e9dfc5;
+
+  /* Semantic aliases */
+  --color-background: var(--color-cream);
+  --color-foreground: var(--color-ink);
+  --color-primary: var(--color-gold);
+  --color-border: var(--color-line);
+
+  --font-display: 'Cinzel', serif;
+  --font-body: 'Lato', sans-serif;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  background-color: #fefbf1;
+  color: #3d3527;
+  -webkit-font-smoothing: antialiased;
+  font-family: 'Lato', sans-serif;
+}
+
+* {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+*::-webkit-scrollbar {
+  display: none;
+}
+
+.font-display {
+  font-family: 'Cinzel', serif;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.7s ease forwards;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease forwards;
+}
+
+.stagger-1 {
+  animation-delay: 0.1s;
+}
+.stagger-2 {
+  animation-delay: 0.25s;
+}
+.stagger-3 {
+  animation-delay: 0.4s;
+}
+.stagger-4 {
+  animation-delay: 0.55s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-in-up,
+  .animate-fade-in {
+    animation: none;
+    opacity: 1 !important;
+  }
+}

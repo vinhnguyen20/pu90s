@@ -1,0 +1,12 @@
+{
+  "description": "Portfolio của stylist Nguyễn Khánh Hà (Pu90s) — dự án, nghệ sĩ, thương hiệu và KOL. Bilingual VI/EN.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  },
+  "title": "Nguyễn Khánh Hà — Stylist Portfolio",
+  "language": "vi"
+}
