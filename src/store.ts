@@ -1,9 +1,10 @@
 import type { Lang } from './i18n'
-import mainPuPhoto from './imports/main_pu.png'
-import panasonicV1 from './imports/Panasonic_v1.png'
-import panasonicV2 from './imports/Panasonic_v2.png'
-import panasonicV3 from './imports/Panasonic_v3.png'
-import panasonicV4 from './imports/Panasonic_v4.png'
+
+const mainPuPhoto = '/images/main_pu.png'
+const panasonicV1 = '/images/Panasonic_v1.png'
+const panasonicV2 = '/images/Panasonic_v2.png'
+const panasonicV3 = '/images/Panasonic_v3.png'
+const panasonicV4 = '/images/Panasonic_v4.png'
 
 /* ──────────────────────────────────────────────
    Categories
@@ -209,7 +210,7 @@ const PROFILE_KEY = 'pu90s_profile'
 const AUTH_KEY = 'pu90s_auth'
 const PASSWORD = 'pu90s2024'
 const SEED_VERSION_KEY = 'pu90s_seed_v'
-const SEED_VERSION = '5'
+const SEED_VERSION = '6'
 
 function migrateProject(raw: any): Project {
   return {
