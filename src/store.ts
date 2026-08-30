@@ -1,4 +1,9 @@
 import type { Lang } from './i18n'
+import mainPuPhoto from './imports/main_pu.png'
+import panasonicV1 from './imports/Panasonic_v1.png'
+import panasonicV2 from './imports/Panasonic_v2.png'
+import panasonicV3 from './imports/Panasonic_v3.png'
+import panasonicV4 from './imports/Panasonic_v4.png'
 
 /* ──────────────────────────────────────────────
    Categories
@@ -41,6 +46,7 @@ export interface Project {
   subtitle?: string
   category: Category
   artist?: string
+  brand?: string
   images: string[]
   youtubeUrl?: string
   description?: string
@@ -76,7 +82,7 @@ const DEFAULT_PROFILE: SiteProfile = {
   bio2: 'Mình tin rằng thời trang là ngôn ngữ của sự tự tin và cá nhân hóa. Styling của mình hướng đến giúp khách hàng thể hiện rõ nét bản sắc riêng.',
   bio1En: "Hi! I'm Nguyen Khanh Ha (Pu90s), a stylist driven by a love of creativity and fashion. Over six years I have worked with brands and artists to build striking, character-rich imagery.",
   bio2En: 'I believe fashion is the language of confidence and individuality. My styling is about helping each client express who they really are.',
-  profilePhoto: 'https://images.unsplash.com/photo-1784031208107-f489c769e1f9?w=480&h=640&fit=crop&auto=format',
+  profilePhoto: mainPuPhoto,
   email: 'nguyenthothangqt12@gmail.com',
   phone: '0867.470.512',
   instagram: 'Pu90s',
@@ -91,14 +97,12 @@ const SEED_PROJECTS: Project[] = [
     subtitle: 'Dẫn Đầu Sống Xanh',
     category: 'brand',
     artist: 'Panasonic',
-    images: [
-      'https://images.unsplash.com/photo-1627292441194-0280c19e74e4?w=900&h=1200&fit=crop&auto=format',
-      'https://images.unsplash.com/photo-1613915617430-8ab0fd7c6baf?w=900&h=1200&fit=crop&auto=format',
-      'https://images.unsplash.com/photo-1662532577856-e8ee8b138a8b?w=900&h=1200&fit=crop&auto=format',
-    ],
+    brand: 'Panasonic',
+    images: [panasonicV1, panasonicV2, panasonicV3, panasonicV4],
+    youtubeUrl: 'https://www.youtube.com/watch?v=G0a2E7VHmEU',
     description: 'Chiến dịch key visual "Dẫn Đầu Sống Xanh" — Mặc Xanh, Ăn Xanh, Sống Xanh cho Panasonic Việt Nam. Styling cho 3 khung hình chủ đạo của chiến dịch.',
     descriptionEn: 'Key visual campaign "Dan Dau Song Xanh" — Wear Green, Eat Green, Live Green for Panasonic Vietnam. Styling for three hero shots across the brand campaign.',
-    coverImage: 'https://images.unsplash.com/photo-1627292441194-0280c19e74e4?w=600&h=800&fit=crop&auto=format',
+    coverImage: panasonicV1,
     date: '2024',
   },
   {
@@ -108,6 +112,7 @@ const SEED_PROJECTS: Project[] = [
     subtitle: 'Soda Chanh',
     category: 'brand',
     artist: '7Up',
+    brand: '7Up',
     images: [
       'https://images.unsplash.com/photo-1551113006-731674fbb3ff?w=900&h=1200&fit=crop&auto=format',
       'https://images.unsplash.com/photo-1662532577856-e8ee8b138a8b?w=900&h=1200&fit=crop&auto=format',
@@ -124,6 +129,8 @@ const SEED_PROJECTS: Project[] = [
     titleEn: 'Styling Graduation Project',
     subtitle: 'The Dark Garden',
     category: 'project',
+    artist: 'Pu90s',
+    brand: 'SFTV',
     images: [
       'https://images.unsplash.com/photo-1784031208107-f489c769e1f9?w=900&h=1200&fit=crop&auto=format',
       'https://images.unsplash.com/photo-1704775986112-281c826c3ebd?w=900&h=1200&fit=crop&auto=format',
@@ -143,6 +150,7 @@ const SEED_PROJECTS: Project[] = [
     subtitle: 'Music Video',
     category: 'artist',
     artist: '9 Em Xinh',
+    brand: '9 Em Xinh',
     images: [
       'https://images.unsplash.com/photo-1674156397151-5694a8bfbd51?w=900&h=1200&fit=crop&auto=format',
       'https://images.unsplash.com/photo-1681028442065-6d1a85eea2ef?w=900&h=1200&fit=crop&auto=format',
@@ -161,6 +169,7 @@ const SEED_PROJECTS: Project[] = [
     subtitle: 'Winter Luxe',
     category: 'kol',
     artist: 'Bling Babi',
+    brand: 'Bling Babi',
     images: [
       'https://images.unsplash.com/photo-1553375886-59c75d4ee8a3?w=900&h=1200&fit=crop&auto=format',
       'https://images.unsplash.com/photo-1775829102453-bb16cc85c353?w=900&h=1200&fit=crop&auto=format',
@@ -178,6 +187,7 @@ const SEED_PROJECTS: Project[] = [
     subtitle: 'City Luxe',
     category: 'kol',
     artist: 'Yuldaily',
+    brand: 'Yuldaily',
     images: [
       'https://images.unsplash.com/photo-1613915617430-8ab0fd7c6baf?w=900&h=1200&fit=crop&auto=format',
       'https://images.unsplash.com/photo-1770062422093-ae32c8fed2a3?w=900&h=1200&fit=crop&auto=format',
@@ -198,6 +208,8 @@ const PROJECTS_KEY = 'pu90s_projects'
 const PROFILE_KEY = 'pu90s_profile'
 const AUTH_KEY = 'pu90s_auth'
 const PASSWORD = 'pu90s2024'
+const SEED_VERSION_KEY = 'pu90s_seed_v'
+const SEED_VERSION = '5'
 
 function migrateProject(raw: any): Project {
   return {
@@ -208,6 +220,7 @@ function migrateProject(raw: any): Project {
     category: normalizeCategory(raw?.category),
     artist: raw?.artist ?? undefined,
     images: Array.isArray(raw?.images) ? raw.images.filter(Boolean) : [],
+    brand: raw?.brand ?? undefined,
     youtubeUrl: raw?.youtubeUrl ?? undefined,
     description: raw?.description ?? undefined,
     descriptionEn: raw?.descriptionEn ?? undefined,
@@ -218,6 +231,11 @@ function migrateProject(raw: any): Project {
 
 export function getProjects(): Project[] {
   try {
+    const seedVersion = localStorage.getItem(SEED_VERSION_KEY)
+    if (seedVersion !== SEED_VERSION) {
+      localStorage.removeItem(PROJECTS_KEY)
+      localStorage.setItem(SEED_VERSION_KEY, SEED_VERSION)
+    }
     const stored = localStorage.getItem(PROJECTS_KEY)
     if (stored) {
       const parsed = JSON.parse(stored)
@@ -226,6 +244,7 @@ export function getProjects(): Project[] {
   } catch {}
   try {
     localStorage.setItem(PROJECTS_KEY, JSON.stringify(SEED_PROJECTS))
+    localStorage.setItem(SEED_VERSION_KEY, SEED_VERSION)
   } catch {}
   return SEED_PROJECTS
 }

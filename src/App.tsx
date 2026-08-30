@@ -30,6 +30,29 @@ export default function App() {
     document.documentElement.lang = lang
   }, [lang])
 
+  useEffect(() => {
+    if (page !== 'home') return
+    const init = () => {
+      const els = document.querySelectorAll('[data-reveal]')
+      if (!els.length) return
+      const observer = new IntersectionObserver(
+        entries => {
+          entries.forEach(e => {
+            if (e.isIntersecting) {
+              e.target.classList.add('is-visible')
+              observer.unobserve(e.target)
+            }
+          })
+        },
+        { threshold: 0.1 },
+      )
+      els.forEach(el => observer.observe(el))
+      return () => observer.disconnect()
+    }
+    const cleanup = init()
+    return cleanup
+  }, [page])
+
   const langValue = useMemo(
     () => ({
       lang,

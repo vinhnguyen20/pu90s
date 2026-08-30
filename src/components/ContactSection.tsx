@@ -2,6 +2,9 @@ import type { SiteProfile } from '../store'
 import { profileName } from '../store'
 import { useLang } from '../i18n'
 
+const FALLBACK_PHOTO =
+  'https://images.unsplash.com/photo-1784031208107-f489c769e1f9?w=480&h=640&fit=crop&auto=format'
+
 interface Props {
   profile: SiteProfile
 }
@@ -20,20 +23,26 @@ export default function ContactSection({ profile }: Props) {
         <StarburstSVG size={100} />
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 lg:px-14 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-        {/* Left: decorative circle */}
+      <div data-reveal className="max-w-7xl mx-auto px-6 lg:px-14 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+        {/* Left: photo */}
         <div className="flex justify-center lg:justify-start">
-          <div className="relative w-64 h-64 lg:w-80 lg:h-80">
-            <div
-              className="w-full h-full rounded-full overflow-hidden"
-              style={{
-                background:
-                  'conic-gradient(from 30deg, #fbf6e6 0deg, #efe5c8 70deg, #dfd1ab 140deg, #f5eeda 210deg, #e7dbb9 280deg, #fbf6e6 360deg)',
-              }}
-            />
-            <div className="absolute inset-6 rounded-full bg-cream-2" />
-            <div className="absolute inset-0 rounded-full border border-line" />
-            <div className="absolute inset-6 rounded-full border border-line/70" />
+          <div className="relative">
+            <div className="absolute -inset-3 border border-line" />
+            <div className="absolute -inset-6 border border-line/60" />
+            <div className="relative w-64 lg:w-80 aspect-[3/4] overflow-hidden bg-cream-3">
+              <img
+                src={profile.profilePhoto}
+                alt={profileName(profile, lang)}
+                className="w-full h-full object-cover object-top"
+                onError={e => {
+                  ;(e.target as HTMLImageElement).src = FALLBACK_PHOTO
+                }}
+              />
+              <span className="absolute top-0 left-0 w-6 h-px bg-gold" />
+              <span className="absolute top-0 left-0 w-px h-6 bg-gold" />
+              <span className="absolute bottom-0 right-0 w-6 h-px bg-gold" />
+              <span className="absolute bottom-0 right-0 w-px h-6 bg-gold" />
+            </div>
           </div>
         </div>
 
@@ -43,8 +52,6 @@ export default function ContactSection({ profile }: Props) {
             {heading[0]}
             <br />
             {heading[1]}
-            <br />
-            {heading[2]}
           </h2>
 
           <div className="space-y-6">

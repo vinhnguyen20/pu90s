@@ -44,13 +44,13 @@ export default function PortfolioSection({ projects, onProjectClick }: Props) {
     <section id="portfolio" className="bg-cream py-20 lg:py-28 border-t border-line">
       <div className="max-w-7xl mx-auto px-6 lg:px-14">
         {/* Section header */}
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-14">
+        <div data-reveal className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-14">
           <div>
             <p className="text-[10px] tracking-[0.5em] uppercase text-gold font-display mb-3">
               {t('portfolio')}
             </p>
             <div className="w-10 h-px bg-gold/60 mb-6" />
-            <h2 className="font-display text-3xl sm:text-4xl text-ink tracking-wide">
+            <h2 className="font-display text-3xl sm:text-4xl text-ink tracking-wide min-w-[16rem]">
               {t('selectedWorks')}
             </h2>
           </div>
@@ -61,7 +61,7 @@ export default function PortfolioSection({ projects, onProjectClick }: Props) {
               <button
                 key={mode}
                 onClick={() => setViewMode(mode)}
-                className={`text-[10px] tracking-[0.25em] uppercase px-5 py-2.5 transition-all duration-300 ${
+                className={`text-[10px] tracking-[0.25em] uppercase w-[7.5rem] text-center py-2.5 transition-all duration-300 ${
                   i === 0 ? 'border-r border-line' : ''
                 } ${
                   viewMode === mode
@@ -83,6 +83,7 @@ export default function PortfolioSection({ projects, onProjectClick }: Props) {
                 active={activeCategory === 'all'}
                 onClick={() => setActiveCategory('all')}
                 label={t('all')}
+                fixedWidth="5.5rem"
               />
               {CATEGORY_ORDER.map(cat => (
                 <FilterPill
@@ -99,6 +100,7 @@ export default function PortfolioSection({ projects, onProjectClick }: Props) {
                 active={activeArtist === 'all'}
                 onClick={() => setActiveArtist('all')}
                 label={t('allArtists')}
+                fixedWidth="10rem"
               />
               {artists.map(artist => (
                 <FilterPill
@@ -160,12 +162,13 @@ export default function PortfolioSection({ projects, onProjectClick }: Props) {
   )
 }
 
-function FilterPill({ active, onClick, label }: { active: boolean; onClick: () => void; label: string }) {
+function FilterPill({ active, onClick, label, fixedWidth }: { active: boolean; onClick: () => void; label: string; fixedWidth?: string }) {
   return (
     <button
       onClick={onClick}
       aria-pressed={active}
-      className={`text-[10px] tracking-[0.22em] uppercase px-4 py-2 border transition-all duration-300 ${
+      style={fixedWidth ? { width: fixedWidth } : undefined}
+      className={`text-[10px] tracking-[0.22em] uppercase px-4 py-2 border transition-all duration-300 text-center whitespace-nowrap ${
         active
           ? 'border-gold text-gold-deep bg-gold/15'
           : 'border-line text-ink-soft hover:border-gold/70 hover:text-ink'

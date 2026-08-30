@@ -18,7 +18,7 @@ export const DICT = {
 
     // ── Hero ──
     heroQuote: '"Stylist là những người hùng thầm lặng của ngành thời trang."',
-    aboutMe: 'Về tôi',
+    aboutMe: 'Giới thiệu',
     role: 'Stylist',
     labelEmail: 'Email',
     labelPhone: 'Điện thoại',
@@ -42,6 +42,7 @@ export const DICT = {
 
     // ── Lightbox ──
     artist: 'Nghệ sĩ',
+    labelBrand: 'Thương hiệu',
     year: 'Năm',
     photos: 'Ảnh',
     watchVideo: 'Xem video',
@@ -51,7 +52,7 @@ export const DICT = {
     next: 'Sau',
 
     // ── Contact ──
-    contactHeading: ['HỢP TÁC', 'CÙNG', 'NHAU'],
+    contactHeading: ['HỢP TÁC VÀ', 'GIỚI THIỆU'],
     footerRole: 'Stylist',
 
     // ── Login ──
@@ -119,7 +120,7 @@ export const DICT = {
 
     // ── Hero ──
     heroQuote: '"Stylists are the unsung heroes of the fashion industry."',
-    aboutMe: 'About Me',
+    aboutMe: 'Giới thiệu',
     role: 'Stylist',
     labelEmail: 'Email',
     labelPhone: 'Phone',
@@ -143,6 +144,7 @@ export const DICT = {
 
     // ── Lightbox ──
     artist: 'Artist',
+    labelBrand: 'Brand',
     year: 'Year',
     photos: 'Photos',
     watchVideo: 'Watch Video',
@@ -152,7 +154,7 @@ export const DICT = {
     next: 'Next',
 
     // ── Contact ──
-    contactHeading: ["LET'S", 'WORK', 'TOGETHER'],
+    contactHeading: ["LET'S WORK", 'TOGETHER'],
     footerRole: 'Stylist',
 
     // ── Login ──

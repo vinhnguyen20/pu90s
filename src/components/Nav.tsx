@@ -25,15 +25,29 @@ export default function Nav({ profile, onLoginClick, isAuthed }: Props) {
   const scrollTo = (id: string) => {
     setMenuOpen(false)
     setTimeout(() => {
-      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
+      const el = document.getElementById(id)
+      if (!el) return
+      const start = window.scrollY
+      const target = el.getBoundingClientRect().top + window.scrollY - 64
+      const distance = target - start
+      const duration = 900
+      let startTime: number | null = null
+      const ease = (t: number) => t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t
+      const step = (now: number) => {
+        if (!startTime) startTime = now
+        const elapsed = Math.min((now - startTime) / duration, 1)
+        window.scrollTo(0, start + distance * ease(elapsed))
+        if (elapsed < 1) requestAnimationFrame(step)
+      }
+      requestAnimationFrame(step)
     }, 100)
   }
 
   const navLinks = [
-    { label: t('navAbout'), id: 'about' },
-    { label: t('navPortfolio'), id: 'portfolio' },
-    { label: t('navArtists'), id: 'artists' },
-    { label: t('navContact'), id: 'contact' },
+    { label: t('navAbout'), id: 'about', w: 'w-[5.5rem]' },
+    { label: t('navPortfolio'), id: 'portfolio', w: 'w-[4.5rem]' },
+    { label: t('navArtists'), id: 'artists', w: 'w-[4rem]' },
+    { label: t('navContact'), id: 'contact', w: 'w-[4rem]' },
   ]
 
   return (
@@ -59,7 +73,7 @@ export default function Nav({ profile, onLoginClick, isAuthed }: Props) {
             <button
               key={link.id}
               onClick={() => scrollTo(link.id)}
-              className="text-[10px] tracking-[0.28em] uppercase text-ink-soft hover:text-gold-deep transition-colors duration-300 font-light"
+              className={`cursor-pointer text-[10px] tracking-[0.28em] uppercase text-ink-soft hover:text-gold-deep transition-colors duration-300 font-light text-center relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-px after:bg-gold after:transition-all after:duration-300 hover:after:w-full ${link.w}`}
             >
               {link.label}
             </button>
@@ -72,7 +86,7 @@ export default function Nav({ profile, onLoginClick, isAuthed }: Props) {
 
           <button
             onClick={onLoginClick}
-            className="hidden md:block text-[10px] tracking-[0.28em] uppercase border border-line hover:border-gold text-ink-soft hover:text-gold-deep px-5 py-2 transition-all duration-300"
+            className="hidden md:block text-[10px] tracking-[0.28em] uppercase border border-line hover:border-gold text-ink-soft hover:text-gold-deep py-2 transition-all duration-300 text-center w-[7.5rem]"
           >
             {isAuthed ? t('dashboard') : t('login')}
           </button>

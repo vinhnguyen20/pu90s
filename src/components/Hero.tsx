@@ -51,7 +51,7 @@ export default function Hero({ profile }: Props) {
         <div className="max-w-7xl mx-auto px-6 lg:px-14 w-full grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-16 items-center py-24 relative">
           {/* Left col: text */}
           <div className="max-w-xl">
-            <p className="text-ink-soft/70 text-[10px] tracking-[0.4em] leading-[2.2] uppercase italic mb-10 animate-fade-in-up stagger-1 opacity-0">
+            <p className="min-h-[4.5rem] text-ink-soft/70 text-[10px] tracking-[0.4em] leading-[2.2] uppercase italic mb-10 animate-fade-in-up stagger-1 opacity-0">
               {t('heroQuote')}
             </p>
 
@@ -70,25 +70,11 @@ export default function Hero({ profile }: Props) {
               {t('role')}
             </p>
 
-            <div className="space-y-5 animate-fade-in-up stagger-3 opacity-0">
+            <div className="min-h-[10rem] space-y-5 animate-fade-in-up stagger-3 opacity-0">
               <p className="text-ink/80 text-sm leading-[1.9] font-light italic">{bio1}</p>
               <p className="text-ink-soft text-sm leading-[1.9] font-light italic">{bio2}</p>
             </div>
 
-            <div className="mt-10 space-y-2.5 animate-fade-in-up stagger-4 opacity-0">
-              <ContactRow label={t('labelEmail')} value={profile.email} href={`mailto:${profile.email}`} />
-              <ContactRow
-                label={t('labelPhone')}
-                value={profile.phone}
-                href={`tel:${profile.phone.replace(/\./g, '')}`}
-              />
-              <ContactRow
-                label={t('labelInstagram')}
-                value={`@${profile.instagram}`}
-                href={`https://instagram.com/${profile.instagram}`}
-              />
-              <ContactRow label={t('labelFacebook')} value="ic.nguyen.16" href={profile.facebook} />
-            </div>
           </div>
 
           {/* Right col: photo */}
@@ -118,52 +104,38 @@ export default function Hero({ profile }: Props) {
 
       {/* ── Introduction strip ── */}
       <section className="bg-cream-2 border-t border-line py-20 lg:py-28">
-        <div className="max-w-7xl mx-auto px-6 lg:px-14 flex flex-col lg:flex-row items-center gap-14 lg:gap-20">
-          {/* Decorative circle */}
+        <div data-reveal className="max-w-7xl mx-auto px-6 lg:px-14 flex flex-col lg:flex-row items-center gap-14 lg:gap-20">
+          {/* Photo */}
           <div className="flex-shrink-0 relative">
-            <div
-              className="w-48 h-48 lg:w-60 lg:h-60 rounded-full overflow-hidden"
-              style={{
-                background:
-                  'conic-gradient(from 210deg, #faf4e2 0deg, #eee3c3 65deg, #ddcea3 130deg, #f4ecd6 200deg, #e5d8b2 270deg, #f9f2e0 330deg, #faf4e2 360deg)',
-              }}
-            />
-            <div className="absolute inset-3 rounded-full bg-cream-2" />
-            <div className="absolute inset-0 rounded-full border border-line" />
-            <div className="absolute inset-3 rounded-full border border-line/70" />
+            <div className="absolute -inset-3 border border-line" />
+            <div className="absolute -inset-6 border border-line/60" />
+            <div className="w-48 lg:w-60 aspect-[3/4] overflow-hidden bg-cream-3 relative">
+              <img
+                src={profile.profilePhoto}
+                alt={profileName(profile, lang)}
+                className="w-full h-full object-cover object-top"
+                onError={e => {
+                  ;(e.target as HTMLImageElement).src = FALLBACK_PHOTO
+                }}
+              />
+              <span className="absolute top-0 left-0 w-5 h-px bg-gold" />
+              <span className="absolute top-0 left-0 w-px h-5 bg-gold" />
+              <span className="absolute bottom-0 right-0 w-5 h-px bg-gold" />
+              <span className="absolute bottom-0 right-0 w-px h-5 bg-gold" />
+            </div>
           </div>
 
           <div>
             <p className="text-ink/75 text-sm leading-[2] italic max-w-lg mb-5">{t('introText1')}</p>
-            <p className="text-ink-soft text-sm italic mb-12">{t('introText2')}</p>
-            <h2 className="font-display text-4xl sm:text-5xl lg:text-6xl xl:text-7xl tracking-[0.18em] text-ink">
-              {t('introHeading')}
-            </h2>
-            <div className="w-full h-px bg-line mt-4" />
+            <p className="text-ink-soft text-sm italic">{t('introText2')}</p>
           </div>
         </div>
       </section>
+
     </>
   )
 }
 
-function ContactRow({ label, value, href }: { label: string; value: string; href: string }) {
-  return (
-    <div className="flex items-baseline gap-3 text-xs">
-      <span className="text-gold text-[9px] tracking-[0.2em] uppercase w-24 flex-shrink-0 whitespace-nowrap">
-        {label}
-      </span>
-      <a
-        href={href}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="text-ink-soft hover:text-ink transition-colors tracking-wide"
-      >
-        {value}
-      </a>
-    </div>
-  )
-}
 
 function StarburstSVG({ size }: { size: number }) {
   const lines = Array.from({ length: 16 }, (_, i) => i)
