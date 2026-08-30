@@ -275,7 +275,11 @@ export function updateProject(project: Project): void {
 export function getProfile(): SiteProfile {
   try {
     const stored = localStorage.getItem(PROFILE_KEY)
-    if (stored) return { ...DEFAULT_PROFILE, ...JSON.parse(stored) }
+    if (stored) {
+      const parsed = JSON.parse(stored)
+      // Always use the code-defined photo, never the localStorage value
+      return { ...DEFAULT_PROFILE, ...parsed, profilePhoto: DEFAULT_PROFILE.profilePhoto }
+    }
   } catch {}
   return DEFAULT_PROFILE
 }
