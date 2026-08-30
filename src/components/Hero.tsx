@@ -113,7 +113,7 @@ export default function Hero({ profile }: Props) {
                 alt={profileName(profile, lang)}
                 className="w-full h-full object-cover object-top"
                 onError={e => {
-                  ;(e.target as HTMLImageElement).src = FALLBACK_PHOTO
+                  ;(e.target as HTMLImageElement).style.display = 'none'
                 }}
               />
               <span className="absolute top-0 left-0 w-5 h-px bg-gold" />
