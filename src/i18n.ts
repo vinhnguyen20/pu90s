@@ -8,6 +8,7 @@ export const DICT = {
   vi: {
     // ── Nav ──
     navAbout: 'Giới thiệu',
+    navServices: 'Dịch vụ',
     navPortfolio: 'Portfolio',
     navArtists: 'Nghệ sĩ',
     navContact: 'Liên hệ',
@@ -64,6 +65,9 @@ export const DICT = {
     verifying: 'Đang kiểm tra…',
     wrongPassword: 'Mật khẩu không đúng.',
     defaultPassword: 'Mật khẩu mặc định: pu90s2024',
+    signInWithGoogle: 'Đăng nhập bằng Google',
+    signingIn: 'Đang đăng nhập…',
+    accessDenied: 'Tài khoản này không có quyền truy cập.',
 
     // ── Admin ──
     admin: 'Quản trị',
@@ -88,6 +92,7 @@ export const DICT = {
     fYear: 'Năm',
     fYoutube: 'Link YouTube',
     fCover: 'Ảnh bìa (URL)',
+    fBrand: 'Thương hiệu',
     fGallery: 'Ảnh bộ sưu tập (mỗi dòng một URL)',
     fGalleryHint: 'Mỗi URL một dòng. Ảnh bìa được tự động thêm vào.',
     fDescription: 'Mô tả (VI)',
@@ -105,11 +110,19 @@ export const DICT = {
     saveProfile: 'Lưu hồ sơ',
     savedOk: 'Đã lưu ✓',
     optionalEnHint: 'Bỏ trống sẽ dùng nội dung tiếng Việt.',
+    manageCategories: 'Hạng mục',
+    addCategory: 'Thêm hạng mục',
+    fCategoryId: 'ID (không dấu, không cách)',
+    fCategoryVi: 'Tên hạng mục (VI)',
+    fCategoryEn: 'Tên hạng mục (EN)',
+    saveCategory: 'Lưu hạng mục',
+    noCategoriesYet: 'Chưa có hạng mục nào.',
   },
 
   en: {
     // ── Nav ──
     navAbout: 'About',
+    navServices: 'Services',
     navPortfolio: 'Portfolio',
     navArtists: 'Artists',
     navContact: 'Contact',
@@ -166,6 +179,9 @@ export const DICT = {
     verifying: 'Verifying…',
     wrongPassword: 'Incorrect password.',
     defaultPassword: 'Default password: pu90s2024',
+    signInWithGoogle: 'Sign in with Google',
+    signingIn: 'Signing in…',
+    accessDenied: 'This account does not have access.',
 
     // ── Admin ──
     admin: 'Admin',
@@ -190,6 +206,7 @@ export const DICT = {
     fYear: 'Year',
     fYoutube: 'YouTube URL',
     fCover: 'Cover Image URL',
+    fBrand: 'Brand',
     fGallery: 'Gallery Images (one URL per line)',
     fGalleryHint: 'Each URL on a separate line. Cover image is included automatically.',
     fDescription: 'Description (VI)',
@@ -207,6 +224,13 @@ export const DICT = {
     saveProfile: 'Save Profile',
     savedOk: 'Saved ✓',
     optionalEnHint: 'Leave empty to fall back to the Vietnamese text.',
+    manageCategories: 'Categories',
+    addCategory: 'Add Category',
+    fCategoryId: 'ID (no spaces, no accents)',
+    fCategoryVi: 'Category name (VI)',
+    fCategoryEn: 'Category name (EN)',
+    saveCategory: 'Save Category',
+    noCategoriesYet: 'No categories yet.',
   },
 } as const
 

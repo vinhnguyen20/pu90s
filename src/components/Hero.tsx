@@ -101,8 +101,8 @@ export default function Hero({ profile }: Props) {
       </section>
 
       {/* ── Introduction strip ── */}
-      <section className="bg-cream-2 border-t border-line py-20 lg:py-28">
-        <div data-reveal className="max-w-7xl mx-auto px-6 lg:px-14 flex flex-col lg:flex-row items-center gap-14 lg:gap-20">
+      <section className="bg-cream-2 border-t border-line py-12 md:py-16 lg:py-24">
+        <div data-reveal className="max-w-7xl mx-auto px-6 lg:px-14 flex flex-col lg:flex-row items-center gap-10 lg:gap-20">
           {/* Photo */}
           <div className="flex-shrink-0 relative">
             <div className="absolute -inset-3 border border-line" />

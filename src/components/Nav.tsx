@@ -45,6 +45,7 @@ export default function Nav({ profile, onLoginClick, isAuthed }: Props) {
 
   const navLinks = [
     { label: t('navAbout'), id: 'about', w: 'w-[5.5rem]' },
+    { label: t('navServices'), id: 'services', w: 'w-[4.5rem]' },
     { label: t('navPortfolio'), id: 'portfolio', w: 'w-[4.5rem]' },
     { label: t('navArtists'), id: 'artists', w: 'w-[4rem]' },
     { label: t('navContact'), id: 'contact', w: 'w-[4rem]' },

@@ -1,11 +1,12 @@
 import { useState, useMemo } from 'react'
-import type { Project, Category } from '../store'
-import { CATEGORY_LABELS, CATEGORY_ORDER, getArtists, projectTitle, projectDescription } from '../store'
+import type { Project, CategoryDef } from '../store'
+import { getArtists, projectTitle, projectDescription, getCategoryLabel } from '../store'
 import { useLang } from '../i18n'
 import type { Lang } from '../i18n'
 
 interface Props {
   projects: Project[]
+  categories: CategoryDef[]
   onProjectClick: (project: Project) => void
 }
 
@@ -14,10 +15,10 @@ type ViewMode = 'category' | 'artist'
 const FALLBACK_COVER =
   'https://images.unsplash.com/photo-1784031208107-f489c769e1f9?w=600&h=800&fit=crop&auto=format'
 
-export default function PortfolioSection({ projects, onProjectClick }: Props) {
+export default function PortfolioSection({ projects, categories, onProjectClick }: Props) {
   const { lang, t } = useLang()
   const [viewMode, setViewMode] = useState<ViewMode>('category')
-  const [activeCategory, setActiveCategory] = useState<Category | 'all'>('all')
+  const [activeCategory, setActiveCategory] = useState<string>('all')
   const [activeArtist, setActiveArtist] = useState<string | 'all'>('all')
   const [hoveredId, setHoveredId] = useState<string | null>(null)
 
@@ -34,11 +35,14 @@ export default function PortfolioSection({ projects, onProjectClick }: Props) {
 
   const groupedByCategory = useMemo(() => {
     if (viewMode !== 'category' || activeCategory !== 'all') return null
-    const map = new Map<Category, Project[]>()
-    CATEGORY_ORDER.forEach(c => map.set(c, []))
-    projects.forEach(p => map.get(p.category)?.push(p))
+    const map = new Map<string, Project[]>()
+    categories.forEach(c => map.set(c.id, []))
+    projects.forEach(p => {
+      if (map.has(p.category)) map.get(p.category)!.push(p)
+      else map.set(p.category, [p])
+    })
     return map
-  }, [projects, viewMode, activeCategory])
+  }, [projects, categories, viewMode, activeCategory])
 
   return (
     <section id="portfolio" className="bg-cream py-20 lg:py-28 border-t border-line">
@@ -75,7 +79,7 @@ export default function PortfolioSection({ projects, onProjectClick }: Props) {
           </div>
         </div>
 
-        {/* Filter pills — always render the artists anchor */}
+        {/* Filter pills */}
         <div id="artists" className="scroll-mt-24">
           {viewMode === 'category' ? (
             <div className="flex flex-wrap gap-2 mb-12">
@@ -85,12 +89,12 @@ export default function PortfolioSection({ projects, onProjectClick }: Props) {
                 label={t('all')}
                 fixedWidth="5.5rem"
               />
-              {CATEGORY_ORDER.map(cat => (
+              {categories.map(cat => (
                 <FilterPill
-                  key={cat}
-                  active={activeCategory === cat}
-                  onClick={() => setActiveCategory(cat)}
-                  label={CATEGORY_LABELS[cat]}
+                  key={cat.id}
+                  active={activeCategory === cat.id}
+                  onClick={() => setActiveCategory(cat.id)}
+                  label={lang === 'en' ? cat.en : cat.vi}
                 />
               ))}
             </div>
@@ -114,23 +118,24 @@ export default function PortfolioSection({ projects, onProjectClick }: Props) {
           )}
         </div>
 
-        {/* Grid — grouped by category when "All" in category view */}
+        {/* Grid */}
         {groupedByCategory ? (
           <div className="space-y-16">
-            {CATEGORY_ORDER.map(cat => {
-              const items = groupedByCategory.get(cat) || []
+            {categories.map(cat => {
+              const items = groupedByCategory.get(cat.id) || []
               if (!items.length) return null
               return (
-                <div key={cat}>
+                <div key={cat.id}>
                   <div className="flex items-center gap-4 mb-7">
                     <span className="text-[10px] tracking-[0.45em] uppercase text-gold-deep font-display">
-                      {CATEGORY_LABELS[cat]}
+                      {lang === 'en' ? cat.en : cat.vi}
                     </span>
                     <span className="flex-1 h-px bg-line" />
                     <span className="text-[10px] text-ink-soft/70">{items.length}</span>
                   </div>
                   <ProjectGrid
                     projects={items}
+                    categories={categories}
                     lang={lang}
                     viewProjectLabel={t('viewProject')}
                     hoveredId={hoveredId}
@@ -144,6 +149,7 @@ export default function PortfolioSection({ projects, onProjectClick }: Props) {
         ) : (
           <ProjectGrid
             projects={filteredProjects}
+            categories={categories}
             lang={lang}
             viewProjectLabel={t('viewProject')}
             hoveredId={hoveredId}
@@ -181,6 +187,7 @@ function FilterPill({ active, onClick, label, fixedWidth }: { active: boolean; o
 
 function ProjectGrid({
   projects,
+  categories,
   lang,
   viewProjectLabel,
   hoveredId,
@@ -188,6 +195,7 @@ function ProjectGrid({
   onProjectClick,
 }: {
   projects: Project[]
+  categories: CategoryDef[]
   lang: Lang
   viewProjectLabel: string
   hoveredId: string | null
@@ -200,6 +208,7 @@ function ProjectGrid({
         <ProjectCard
           key={project.id}
           project={project}
+          categories={categories}
           lang={lang}
           viewProjectLabel={viewProjectLabel}
           dimmed={hoveredId !== null && hoveredId !== project.id}
@@ -214,6 +223,7 @@ function ProjectGrid({
 
 function ProjectCard({
   project,
+  categories,
   lang,
   viewProjectLabel,
   dimmed,
@@ -222,6 +232,7 @@ function ProjectCard({
   onClick,
 }: {
   project: Project
+  categories: CategoryDef[]
   lang: Lang
   viewProjectLabel: string
   dimmed: boolean
@@ -240,29 +251,20 @@ function ProjectCard({
       onMouseLeave={onMouseLeave}
       onClick={onClick}
       onKeyDown={e => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault()
-          onClick()
-        }
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClick() }
       }}
       tabIndex={0}
       role="button"
     >
-      {/* Image */}
       <div className="relative aspect-[3/4] overflow-hidden bg-cream-3">
         <img
           src={project.coverImage}
           alt={projectTitle(project, lang)}
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
           loading="lazy"
-          onError={e => {
-            ;(e.target as HTMLImageElement).src = FALLBACK_COVER
-          }}
+          onError={e => { ;(e.target as HTMLImageElement).src = FALLBACK_COVER }}
         />
-        {/* Overlay on hover */}
         <div className="absolute inset-0 bg-ink/0 group-hover:bg-ink/65 transition-all duration-500" />
-
-        {/* Hover content */}
         <div className="absolute inset-0 flex flex-col justify-end p-6 opacity-0 group-hover:opacity-100 transition-all duration-400 translate-y-2 group-hover:translate-y-0">
           {description && (
             <p className="text-cream/90 text-xs leading-relaxed mb-4 line-clamp-3">{description}</p>
@@ -270,25 +272,15 @@ function ProjectCard({
           <span className="inline-flex items-center gap-2 text-[10px] tracking-[0.3em] uppercase text-cream">
             {viewProjectLabel}
             <svg width="12" height="10" viewBox="0 0 12 10" fill="none">
-              <path
-                d="M1 5h10M7 1l4 4-4 4"
-                stroke="currentColor"
-                strokeWidth="1"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
+              <path d="M1 5h10M7 1l4 4-4 4" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </span>
         </div>
-
-        {/* Category badge */}
         <div className="absolute top-3 left-3">
           <span className="text-[9px] tracking-[0.3em] uppercase bg-cream/85 text-ink px-2.5 py-1 backdrop-blur-sm border border-line">
-            {CATEGORY_LABELS[project.category]}
+            {getCategoryLabel(categories, project.category, lang)}
           </span>
         </div>
-
-        {/* YouTube indicator */}
         {project.youtubeUrl && (
           <div className="absolute top-3 right-3">
             <span className="w-6 h-6 bg-cream/85 border border-line flex items-center justify-center">
@@ -299,8 +291,6 @@ function ProjectCard({
           </div>
         )}
       </div>
-
-      {/* Card footer */}
       <div className="pt-4 pb-2 border-b border-line">
         <p className="font-display text-sm text-ink tracking-wide mb-1 truncate">
           {projectTitle(project, lang)}

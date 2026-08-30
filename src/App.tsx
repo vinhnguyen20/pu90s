@@ -1,10 +1,22 @@
 import { useState, useCallback, useMemo, useEffect } from 'react'
-import { isAuthenticated, logout, getProjects, getProfile } from './store'
-import type { Project } from './store'
+import { onAuthStateChanged, signInWithPopup, signOut } from 'firebase/auth'
+import type { User } from 'firebase/auth'
+import {
+  collection,
+  onSnapshot,
+  doc,
+  setDoc,
+  deleteDoc,
+  updateDoc,
+} from 'firebase/firestore'
+import { auth, googleProvider, db, ADMIN_EMAIL } from './firebase'
+import type { Project, SiteProfile, CategoryDef } from './store'
+import { DEFAULT_PROFILE, SEED_PROJECTS, DEFAULT_CATEGORIES } from './store'
 import { DICT, LangContext, getStoredLang, storeLang } from './i18n'
 import type { Lang, TKey, Dict } from './i18n'
 import Nav from './components/Nav'
 import Hero from './components/Hero'
+import ServicesSection from './components/ServicesSection'
 import PortfolioSection from './components/PortfolioSection'
 import ContactSection from './components/ContactSection'
 import Lightbox from './components/Lightbox'
@@ -15,11 +27,84 @@ type Page = 'home' | 'login' | 'admin'
 
 export default function App() {
   const [page, setPage] = useState<Page>('home')
-  const [authed, setAuthed] = useState(isAuthenticated)
-  const [selectedProject, setSelectedProject] = useState<Project | null>(null)
-  const [projects, setProjects] = useState(getProjects)
-  const [profile, setProfile] = useState(getProfile)
+  const [user, setUser] = useState<User | null>(null)
+  const [authLoading, setAuthLoading] = useState(true)
+  const [projects, setProjects] = useState<Project[]>([])
+  const [profile, setProfile] = useState<SiteProfile>(DEFAULT_PROFILE)
+  const [categories, setCategories] = useState<CategoryDef[]>(DEFAULT_CATEGORIES)
+  const [dataLoading, setDataLoading] = useState(true)
   const [lang, setLangState] = useState<Lang>(getStoredLang)
+  const [selectedProject, setSelectedProject] = useState<Project | null>(() => null)
+
+  const authed = user?.email === ADMIN_EMAIL
+
+  // Firebase auth listener
+  useEffect(() => {
+    return onAuthStateChanged(auth, u => {
+      setUser(u)
+      setAuthLoading(false)
+    })
+  }, [])
+
+  // Firestore listeners
+  useEffect(() => {
+    let seeded = false
+
+    const unsub1 = onSnapshot(collection(db, 'projects'), snap => {
+      if (snap.empty && !seeded) {
+        seeded = true
+        SEED_PROJECTS.forEach(p => setDoc(doc(db, 'projects', p.id), p))
+        setProjects(SEED_PROJECTS)
+      } else if (!snap.empty) {
+        setProjects(snap.docs.map(d => ({ ...d.data(), id: d.id } as Project)))
+      }
+      setDataLoading(false)
+    })
+
+    const unsub2 = onSnapshot(doc(db, 'profile', 'main'), snap => {
+      if (snap.exists()) {
+        const data = snap.data() as SiteProfile
+        setProfile({ ...DEFAULT_PROFILE, ...data, profilePhoto: DEFAULT_PROFILE.profilePhoto })
+      } else {
+        setDoc(doc(db, 'profile', 'main'), DEFAULT_PROFILE)
+        setProfile(DEFAULT_PROFILE)
+      }
+    })
+
+    const unsub3 = onSnapshot(doc(db, 'config', 'categories'), snap => {
+      if (snap.exists()) {
+        const data = snap.data() as { items: CategoryDef[] }
+        if (Array.isArray(data.items)) setCategories(data.items)
+      } else {
+        setDoc(doc(db, 'config', 'categories'), { items: DEFAULT_CATEGORIES })
+      }
+    })
+
+    return () => {
+      unsub1()
+      unsub2()
+      unsub3()
+    }
+  }, [])
+
+  // URL hash — persist open project
+  useEffect(() => {
+    if (selectedProject) {
+      history.replaceState(null, '', `#${selectedProject.id}`)
+    } else {
+      history.replaceState(null, '', window.location.pathname + window.location.search)
+    }
+  }, [selectedProject])
+
+  // Restore project from hash on load
+  useEffect(() => {
+    if (dataLoading) return
+    const hash = window.location.hash.slice(1)
+    if (hash) {
+      const found = projects.find(p => p.id === hash)
+      if (found) setSelectedProject(found)
+    }
+  }, [dataLoading])
 
   const setLang = useCallback((next: Lang) => {
     setLangState(next)
@@ -30,6 +115,7 @@ export default function App() {
     document.documentElement.lang = lang
   }, [lang])
 
+  // Scroll-reveal animation
   useEffect(() => {
     if (page !== 'home') return
     const init = () => {
@@ -51,7 +137,7 @@ export default function App() {
     }
     const cleanup = init()
     return cleanup
-  }, [page])
+  }, [page, dataLoading])
 
   const langValue = useMemo(
     () => ({
@@ -62,31 +148,71 @@ export default function App() {
     [lang, setLang],
   )
 
-  const handleLogin = useCallback(() => {
-    setAuthed(true)
-    setPage('admin')
+  // ── Firebase auth actions ──
+  const handleGoogleLogin = useCallback(async () => {
+    const result = await signInWithPopup(auth, googleProvider)
+    if (result.user.email === ADMIN_EMAIL) {
+      setPage('admin')
+    }
   }, [])
 
-  const handleLogout = useCallback(() => {
-    logout()
-    setAuthed(false)
+  const handleLogout = useCallback(async () => {
+    await signOut(auth)
     setPage('home')
-    setProfile(getProfile())
-    setProjects(getProjects())
   }, [])
 
   const handleViewSite = useCallback(() => {
-    setProfile(getProfile())
-    setProjects(getProjects())
     setPage('home')
   }, [])
+
+  // ── Firestore CRUD ──
+  const handleAddProject = useCallback(async (project: Omit<Project, 'id'>) => {
+    const id = `proj-${Date.now()}`
+    await setDoc(doc(db, 'projects', id), { ...project, id })
+  }, [])
+
+  const handleUpdateProject = useCallback(async (project: Project) => {
+    await updateDoc(doc(db, 'projects', project.id), { ...project })
+  }, [])
+
+  const handleDeleteProject = useCallback(async (id: string) => {
+    await deleteDoc(doc(db, 'projects', id))
+  }, [])
+
+  const handleSaveProfile = useCallback(async (p: SiteProfile) => {
+    await setDoc(doc(db, 'profile', 'main'), { ...p, profilePhoto: DEFAULT_PROFILE.profilePhoto })
+  }, [])
+
+  const handleSaveCategories = useCallback(async (cats: CategoryDef[]) => {
+    await setDoc(doc(db, 'config', 'categories'), { items: cats })
+  }, [])
+
+  if (authLoading) return null
 
   let content: React.ReactNode
 
   if (page === 'login') {
-    content = <LoginPage onLogin={handleLogin} onBack={() => setPage('home')} />
+    content = (
+      <LoginPage
+        onLogin={handleGoogleLogin}
+        onBack={() => setPage('home')}
+      />
+    )
   } else if (page === 'admin' && authed) {
-    content = <AdminPanel onLogout={handleLogout} onViewSite={handleViewSite} />
+    content = (
+      <AdminPanel
+        onLogout={handleLogout}
+        onViewSite={handleViewSite}
+        projects={projects}
+        profile={profile}
+        categories={categories}
+        onAddProject={handleAddProject}
+        onUpdateProject={handleUpdateProject}
+        onDeleteProject={handleDeleteProject}
+        onSaveProfile={handleSaveProfile}
+        onSaveCategories={handleSaveCategories}
+      />
+    )
   } else {
     content = (
       <div className="bg-cream text-ink min-h-screen">
@@ -95,15 +221,12 @@ export default function App() {
           onLoginClick={() => (authed ? setPage('admin') : setPage('login'))}
           isAuthed={authed}
         />
-
         <Hero profile={profile} />
-
-        <PortfolioSection projects={projects} onProjectClick={setSelectedProject} />
-
+        <ServicesSection />
+        <PortfolioSection projects={projects} categories={categories} onProjectClick={setSelectedProject} />
         <ContactSection profile={profile} />
-
         {selectedProject && (
-          <Lightbox project={selectedProject} onClose={() => setSelectedProject(null)} />
+          <Lightbox project={selectedProject} categories={categories} onClose={() => setSelectedProject(null)} />
         )}
       </div>
     )

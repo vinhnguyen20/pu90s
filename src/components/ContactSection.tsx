@@ -14,14 +14,14 @@ export default function ContactSection({ profile }: Props) {
   return (
     <section
       id="contact"
-      className="bg-cream-2 border-t border-line py-24 lg:py-32 relative overflow-hidden"
+      className="bg-cream-2 border-t border-line relative overflow-hidden"
     >
       {/* Decorative starburst top-right */}
       <div className="absolute top-10 right-12 opacity-20 pointer-events-none">
         <StarburstSVG size={100} />
       </div>
 
-      <div data-reveal className="max-w-7xl mx-auto px-6 lg:px-14 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+      <div data-reveal className="max-w-7xl mx-auto px-6 lg:px-14 py-10 lg:py-15 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
         {/* Left: photo */}
         <div className="flex justify-center lg:justify-start">
           <div className="relative">
@@ -74,7 +74,7 @@ export default function ContactSection({ profile }: Props) {
       </div>
 
       {/* Footer */}
-      <div className="max-w-7xl mx-auto px-6 lg:px-14 mt-24 pt-8 border-t border-line flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div className="max-w-7xl mx-auto px-6 lg:px-14 py-5 border-t border-line flex flex-col sm:flex-row items-center justify-between gap-4">
         <span className="font-display text-sm tracking-[0.3em] uppercase text-ink-soft">
           {profileName(profile, lang)}
         </span>
