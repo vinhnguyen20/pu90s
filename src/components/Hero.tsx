@@ -7,8 +7,6 @@ interface Props {
   profile: SiteProfile
 }
 
-const FALLBACK_PHOTO =
-  'https://images.unsplash.com/photo-1784031208107-f489c769e1f9?w=480&h=640&fit=crop&auto=format'
 
 export default function Hero({ profile }: Props) {
   const { lang, t } = useLang()
@@ -88,7 +86,7 @@ export default function Hero({ profile }: Props) {
                   alt={profileName(profile, lang)}
                   className="w-full h-full object-cover object-top"
                   onError={e => {
-                    ;(e.target as HTMLImageElement).src = FALLBACK_PHOTO
+                    ;(e.target as HTMLImageElement).style.display = 'none'
                   }}
                 />
                 {/* Gold corner accents */}

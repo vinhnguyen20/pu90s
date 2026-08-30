@@ -2,8 +2,6 @@ import type { SiteProfile } from '../store'
 import { profileName } from '../store'
 import { useLang } from '../i18n'
 
-const FALLBACK_PHOTO =
-  'https://images.unsplash.com/photo-1784031208107-f489c769e1f9?w=480&h=640&fit=crop&auto=format'
 
 interface Props {
   profile: SiteProfile
@@ -35,7 +33,7 @@ export default function ContactSection({ profile }: Props) {
                 alt={profileName(profile, lang)}
                 className="w-full h-full object-cover object-top"
                 onError={e => {
-                  ;(e.target as HTMLImageElement).src = FALLBACK_PHOTO
+                  ;(e.target as HTMLImageElement).style.display = 'none'
                 }}
               />
               <span className="absolute top-0 left-0 w-6 h-px bg-gold" />
