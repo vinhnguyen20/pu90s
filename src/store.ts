@@ -210,7 +210,7 @@ const PROFILE_KEY = 'pu90s_profile'
 const AUTH_KEY = 'pu90s_auth'
 const PASSWORD = 'pu90s2024'
 const SEED_VERSION_KEY = 'pu90s_seed_v'
-const SEED_VERSION = '6'
+const SEED_VERSION = '7'
 
 function migrateProject(raw: any): Project {
   return {
@@ -235,6 +235,7 @@ export function getProjects(): Project[] {
     const seedVersion = localStorage.getItem(SEED_VERSION_KEY)
     if (seedVersion !== SEED_VERSION) {
       localStorage.removeItem(PROJECTS_KEY)
+      localStorage.removeItem(PROFILE_KEY)
       localStorage.setItem(SEED_VERSION_KEY, SEED_VERSION)
     }
     const stored = localStorage.getItem(PROJECTS_KEY)
