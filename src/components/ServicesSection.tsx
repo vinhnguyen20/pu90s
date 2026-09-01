@@ -65,29 +65,19 @@ export default function ServicesSection() {
 
   return (
     <section id="services" className="bg-cream border-t border-line py-20 lg:py-28">
-      <div className="max-w-7xl mx-auto px-6 lg:px-14">
+      <div className="px-[clamp(20px,4vw,64px)]">
         {/* Heading */}
         <div data-reveal className="mb-12 lg:mb-16">
-          <p className="text-[10px] tracking-[0.5em] uppercase text-gold font-display mb-4">
+          <p className="font-ui font-medium text-[10.5px] tracking-[0.18em] uppercase text-gold mb-3">
             {lang === 'vi' ? 'Dịch vụ' : 'Services'}
           </p>
-          <h2 className="font-display text-4xl sm:text-5xl lg:text-7xl text-ink tracking-wide leading-[1.05] uppercase">
-            {lang === 'vi' ? (
-              <>
-                DỊCH VỤ<br />
-                CUNG CẤP
-              </>
-            ) : (
-              <>
-                WHAT I<br />
-                PROVIDE
-              </>
-            )}
+          <h2 className="font-display font-medium text-[clamp(28px,3.4vw,42px)] text-ink tracking-[-0.022em] leading-[1.08]">
+            {lang === 'vi' ? 'Dịch vụ cung cấp' : 'What I provide'}
           </h2>
         </div>
 
         {/* Main layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-0 border border-line">
+        <div data-reveal className="grid grid-cols-1 lg:grid-cols-5 gap-0 border border-line">
           {/* Left: image */}
           <div className="lg:col-span-3 aspect-[4/3] lg:aspect-auto overflow-hidden relative">
             {SERVICES.map((s, i) => (
@@ -112,14 +102,14 @@ export default function ServicesSection() {
                   key={s.id}
                   onClick={() => setActive(i)}
                   className={`text-left flex-1 px-8 py-7 lg:py-8 border-b border-line last:border-b-0 transition-all duration-300 group ${
-                    isActive ? 'bg-cream' : 'hover:bg-cream/60'
+                    isActive ? 'bg-cream-2' : 'hover:bg-cream-2/50'
                   }`}
                 >
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-2">
                         <span
-                          className={`text-[9px] tracking-[0.4em] uppercase transition-colors duration-300 ${
+                          className={`font-ui font-light text-[12px] tracking-[0.04em] tabular-nums transition-colors duration-300 ${
                             isActive ? 'text-gold' : 'text-ink-soft/50'
                           }`}
                         >
@@ -132,17 +122,15 @@ export default function ServicesSection() {
                         />
                       </div>
                       <h3
-                        className={`font-display text-base lg:text-lg tracking-wide transition-colors duration-300 mb-2 ${
-                          isActive ? 'text-ink' : 'text-ink-soft'
-                        }`}
+                        className={`font-display font-normal text-[19px] tracking-[-0.005em] leading-[1.32] transition-colors duration-300 mb-2 text-ink`}
                       >
                         {t.title}
                       </h3>
                       <p
-                        className={`text-xs leading-relaxed transition-all duration-500 ${
+                        className={`font-ui font-light text-[13.5px] leading-[1.78] transition-all duration-500 ${
                           isActive
-                            ? 'text-ink/70 max-h-40 opacity-100'
-                            : 'text-ink-soft/60 max-h-0 opacity-0 overflow-hidden'
+                            ? 'text-ink-soft max-h-40 opacity-100'
+                            : 'text-ink-soft/40 max-h-0 opacity-0 overflow-hidden'
                         }`}
                       >
                         {t.desc}

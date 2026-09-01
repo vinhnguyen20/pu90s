@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import type { Project, CategoryDef } from '../store'
 import { getCategoryLabel, projectTitle, projectDescription } from '../store'
 import { useLang } from '../i18n'
@@ -18,6 +18,7 @@ export default function Lightbox({ project, categories, onClose }: Props) {
   const [playing, setPlaying] = useState(false)
   const [imgLoaded, setImgLoaded] = useState(false)
   const [zoomed, setZoomed] = useState(false)
+  const touchStartX = useRef<number | null>(null)
 
   const youtubeId = project.youtubeUrl ? extractYoutubeId(project.youtubeUrl) : null
   const imgCount = project.images.length
@@ -40,6 +41,18 @@ export default function Lightbox({ project, categories, onClose }: Props) {
     goTo((current + 1) % totalSlides)
   }, [totalSlides, current, goTo])
 
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX
+  }
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX.current === null) return
+    const delta = e.changedTouches[0].clientX - touchStartX.current
+    touchStartX.current = null
+    if (Math.abs(delta) < 40) return
+    if (delta > 0) prev()
+    else next()
+  }
+
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (e.key === 'Escape') { if (zoomed) setZoomed(false); else onClose() }
@@ -58,8 +71,8 @@ export default function Lightbox({ project, categories, onClose }: Props) {
   const description = projectDescription(project, lang)
 
   return (
-    <div className="fixed inset-0 z-[100] bg-cream/98 backdrop-blur-sm animate-fade-in" onClick={onClose}>
-      <div className="h-full flex flex-col lg:flex-row" onClick={e => e.stopPropagation()}>
+    <div className="fixed inset-0 z-40 bg-cream/98 backdrop-blur-sm animate-fade-in" onClick={onClose}>
+      <div className="h-full flex flex-col lg:flex-row pt-16" onClick={e => e.stopPropagation()}>
         {/* ── Main panel ── */}
         <div className="flex-1 flex flex-col min-h-0">
           {/* Back button — always in flow, not absolute */}
@@ -90,7 +103,11 @@ export default function Lightbox({ project, categories, onClose }: Props) {
           )}
 
           {/* Content */}
-          <div className="relative h-full max-w-full flex items-center justify-center w-full">
+          <div
+            className="relative h-full max-w-full flex items-center justify-center w-full"
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+          >
             {isVideoSlide ? (
               /* Video slide — wrapper size never changes; iframe overlays thumbnail */
               <div className="relative w-full aspect-video overflow-hidden shadow-[0_10px_40px_rgba(58,47,24,0.22)]">

@@ -8,9 +8,10 @@ interface Props {
   profile: SiteProfile
   onLoginClick: () => void
   isAuthed: boolean
+  hideLinks?: boolean
 }
 
-export default function Nav({ profile, onLoginClick, isAuthed }: Props) {
+export default function Nav({ profile, onLoginClick, isAuthed, hideLinks = false }: Props) {
   const { lang, setLang, t } = useLang()
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
@@ -44,10 +45,10 @@ export default function Nav({ profile, onLoginClick, isAuthed }: Props) {
   }
 
   const navLinks = [
-    { label: t('navAbout'), id: 'about', w: 'w-[5.5rem]' },
-    { label: t('navServices'), id: 'services', w: 'w-[4.5rem]' },
-    { label: t('navPortfolio'), id: 'portfolio', w: 'w-[4.5rem]' },
+    { label: t('navPortfolio'), id: 'portfolio', w: 'w-[4rem]' },
+    { label: t('navAbout'), id: 'about', w: 'w-[4.5rem]' },
     { label: t('navArtists'), id: 'artists', w: 'w-[4rem]' },
+    { label: t('navServices'), id: 'services', w: 'w-[4.5rem]' },
     { label: t('navContact'), id: 'contact', w: 'w-[4rem]' },
   ]
 
@@ -59,22 +60,22 @@ export default function Nav({ profile, onLoginClick, isAuthed }: Props) {
           : 'bg-cream border-line'
       }`}
     >
-      <div className="max-w-7xl mx-auto px-6 lg:px-14 h-16 flex items-center justify-between gap-4">
+      <div className="w-full px-[clamp(20px,4vw,64px)] h-16 flex items-center justify-between gap-4">
         {/* Logo */}
         <button
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          className="font-display text-[11px] sm:text-sm tracking-[0.22em] sm:tracking-[0.3em] uppercase text-ink hover:text-gold transition-colors duration-300 whitespace-nowrap"
+          className="font-ui font-medium text-[12px] tracking-[0.26em] uppercase text-ink-soft hover:text-ink transition-colors duration-300 whitespace-nowrap"
         >
           {profileName(profile, lang)}
         </button>
 
         {/* Desktop links */}
-        <div className="hidden md:flex items-center gap-10">
+        <div className={`hidden xl:flex flex-1 items-center justify-center gap-8 ${hideLinks ? 'invisible' : ''}`}>
           {navLinks.map(link => (
             <button
               key={link.id}
               onClick={() => scrollTo(link.id)}
-              className={`cursor-pointer text-[10px] tracking-[0.28em] uppercase text-ink-soft hover:text-gold-deep transition-colors duration-300 font-light text-center relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-px after:bg-gold after:transition-all after:duration-300 hover:after:w-full ${link.w}`}
+              className="cursor-pointer font-ui font-medium text-[11.5px] tracking-[0.11em] uppercase text-ink-soft hover:text-ink transition-colors duration-300 text-center relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-px after:bg-ink after:transition-all after:duration-300 hover:after:w-full"
             >
               {link.label}
             </button>
@@ -87,14 +88,14 @@ export default function Nav({ profile, onLoginClick, isAuthed }: Props) {
 
           <button
             onClick={onLoginClick}
-            className="hidden md:block text-[10px] tracking-[0.28em] uppercase border border-line hover:border-gold text-ink-soft hover:text-gold-deep py-2 transition-all duration-300 text-center w-[7.5rem]"
+            className={`hidden xl:block font-ui font-medium text-[11.5px] tracking-[0.11em] uppercase border border-line hover:border-ink text-ink-soft hover:text-ink py-2 transition-all duration-300 text-center w-[7.5rem] ${hideLinks ? 'invisible' : ''}`}
           >
             {isAuthed ? t('dashboard') : t('login')}
           </button>
 
           {/* Hamburger */}
           <button
-            className="md:hidden flex flex-col gap-1.5 p-1"
+            className={`xl:hidden flex flex-col gap-1.5 p-1 ${hideLinks ? 'invisible' : ''}`}
             onClick={() => setMenuOpen(v => !v)}
             aria-label={t('toggleMenu')}
             aria-expanded={menuOpen}
@@ -114,11 +115,11 @@ export default function Nav({ profile, onLoginClick, isAuthed }: Props) {
 
       {/* Mobile menu */}
       <div
-        className={`md:hidden overflow-hidden transition-all duration-500 ${
+        className={`xl:hidden overflow-hidden transition-all duration-500 ${
           menuOpen ? 'max-h-80 opacity-100' : 'max-h-0 opacity-0'
         } bg-nav-solid border-b border-line`}
       >
-        <div className="px-6 py-6 flex flex-col gap-5">
+        <div className="px-[clamp(20px,4vw,64px)] py-6 flex flex-col gap-5">
           {navLinks.map(link => (
             <button
               key={link.id}
@@ -153,8 +154,8 @@ function LangSwitch({ lang, setLang }: { lang: Lang; setLang: (l: Lang) => void 
           aria-pressed={lang === code}
           className={`text-[10px] tracking-[0.2em] uppercase px-2.5 py-1.5 transition-all duration-300 ${
             lang === code
-              ? 'bg-gold/20 text-gold-deep'
-              : 'text-ink-soft/70 hover:text-ink hover:bg-gold/10'
+              ? 'bg-gold text-cream'
+              : 'text-muted hover:text-ink hover:bg-gold/10'
           }`}
         >
           {code}

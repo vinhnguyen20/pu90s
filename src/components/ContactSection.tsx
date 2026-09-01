@@ -2,133 +2,110 @@ import type { SiteProfile } from '../store'
 import { profileName } from '../store'
 import { useLang } from '../i18n'
 
-
 interface Props {
   profile: SiteProfile
 }
 
 export default function ContactSection({ profile }: Props) {
-  const { lang, t } = useLang()
-  const heading = t('contactHeading')
+  const { lang } = useLang()
+
+  const scrollTo = (id: string) =>
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
 
   return (
-    <section
-      id="contact"
-      className="bg-cream-2 border-t border-line relative overflow-hidden"
-    >
-      {/* Decorative starburst top-right */}
-      <div className="absolute top-10 right-12 opacity-20 pointer-events-none">
-        <StarburstSVG size={100} />
-      </div>
-
-      <div data-reveal className="max-w-7xl mx-auto px-6 lg:px-14 py-10 lg:py-15 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-        {/* Left: photo */}
-        <div className="flex justify-center lg:justify-start">
-          <div className="relative">
-            <div className="absolute -inset-3 border border-line" />
-            <div className="absolute -inset-6 border border-line/60" />
-            <div className="relative w-64 lg:w-80 aspect-[3/4] overflow-hidden bg-cream-3">
-              <img
-                src={profile.profilePhoto}
-                alt={profileName(profile, lang)}
-                className="w-full h-full object-cover object-top"
-                onError={e => {
-                  ;(e.target as HTMLImageElement).style.display = 'none'
-                }}
-              />
-              <span className="absolute top-0 left-0 w-6 h-px bg-gold" />
-              <span className="absolute top-0 left-0 w-px h-6 bg-gold" />
-              <span className="absolute bottom-0 right-0 w-6 h-px bg-gold" />
-              <span className="absolute bottom-0 right-0 w-px h-6 bg-gold" />
-            </div>
-          </div>
-        </div>
-
-        {/* Right: contact */}
+    <section id="contact" className="border-t border-line bg-cream">
+      <div
+        data-reveal
+        className="px-[clamp(20px,4vw,64px)] py-16 lg:py-20 grid grid-cols-1 sm:grid-cols-3 gap-10 lg:gap-20"
+      >
+        {/* Left: contact info */}
         <div>
-          <h2 className="font-display text-5xl sm:text-6xl lg:text-7xl text-ink leading-[1.15] mb-12 tracking-wide">
-            {heading[0]}
-            <br />
-            {heading[1]}
+          <h2 className="font-display font-medium text-[clamp(28px,3.4vw,42px)] text-ink tracking-[-0.022em] leading-[1.08] mb-6">
+            {lang === 'vi' ? 'Liên hệ' : 'Get in touch'}
           </h2>
+          <div className="space-y-2.5">
+            {profile.email && (
+              <a
+                href={`mailto:${profile.email}`}
+                className="block font-ui font-medium text-[11px] tracking-[0.14em] uppercase text-ink-soft hover:text-ink transition-colors"
+              >
+                {profile.email}
+              </a>
+            )}
+            {profile.phone && (
+              <a
+                href={`tel:${profile.phone.replace(/\./g, '')}`}
+                className="block font-ui font-medium text-[11px] tracking-[0.14em] uppercase text-ink-soft hover:text-ink transition-colors"
+              >
+                {profile.phone}
+              </a>
+            )}
+            <p className="font-ui font-light text-[14px] text-muted">Ho Chi Minh City, Vietnam</p>
+          </div>
+        </div>
 
-          <div className="space-y-6">
-            <ContactItem
-              label={t('labelEmail')}
-              value={profile.email}
-              href={`mailto:${profile.email}`}
-            />
-            <ContactItem
-              label={t('labelPhone')}
-              value={profile.phone}
-              href={`tel:${profile.phone.replace(/\./g, '')}`}
-            />
-            <ContactItem
-              label={t('labelInstagram')}
-              value={`@${profile.instagram}`}
-              href={`https://instagram.com/${profile.instagram}`}
-            />
-            <ContactItem label={t('labelFacebook')} value={profile.facebook} href={profile.facebook} />
+        {/* Center: navigation */}
+        <div>
+          <p className="font-ui font-medium text-[10.5px] tracking-[0.18em] uppercase text-gold mb-6">
+            {lang === 'vi' ? 'Điều hướng' : 'Navigation'}
+          </p>
+          <div className="space-y-2.5">
+            {[
+              { label: lang === 'vi' ? 'DỰ ÁN' : 'WORK', id: 'portfolio' },
+              { label: lang === 'vi' ? 'GIỚI THIỆU' : 'ABOUT', id: 'about' },
+              { label: lang === 'vi' ? 'DỊCH VỤ' : 'SERVICES', id: 'services' },
+              { label: lang === 'vi' ? 'LIÊN HỆ' : 'CONTACT', id: 'contact' },
+            ].map(link => (
+              <button
+                key={link.id}
+                onClick={() => scrollTo(link.id)}
+                className="block font-ui font-medium text-[11px] tracking-[0.14em] uppercase text-ink-soft hover:text-ink transition-colors"
+              >
+                {link.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Right: social */}
+        <div>
+          <p className="font-ui font-medium text-[10.5px] tracking-[0.18em] uppercase text-gold mb-6">
+            {lang === 'vi' ? 'Kết nối' : 'Connect'}
+          </p>
+          <div className="space-y-2.5">
+            {profile.instagram && (
+              <a
+                href={`https://instagram.com/${profile.instagram}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block font-ui font-medium text-[11px] tracking-[0.14em] uppercase text-ink-soft hover:text-ink transition-colors"
+              >
+                Instagram
+              </a>
+            )}
+            {profile.facebook && (
+              <a
+                href={profile.facebook}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block font-ui font-medium text-[11px] tracking-[0.14em] uppercase text-ink-soft hover:text-ink transition-colors"
+              >
+                Facebook
+              </a>
+            )}
           </div>
         </div>
       </div>
 
-      {/* Footer */}
-      <div className="max-w-7xl mx-auto px-6 lg:px-14 py-5 border-t border-line flex flex-col sm:flex-row items-center justify-between gap-4">
-        <span className="font-display text-sm tracking-[0.3em] uppercase text-ink-soft">
+      {/* Bottom bar */}
+      <div className="border-t border-line px-[clamp(20px,4vw,64px)] py-5 flex items-center justify-between">
+        <span className="font-ui font-medium text-[10px] tracking-[0.22em] uppercase text-muted">
           {profileName(profile, lang)}
         </span>
-        <span className="text-[10px] tracking-widest uppercase text-ink-soft/80">
-          © {new Date().getFullYear()} — {profileName(profile, lang)} — {t('footerRole')}
+        <span className="font-ui font-medium text-[10px] tracking-[0.22em] uppercase text-muted">
+          © {new Date().getFullYear()}
         </span>
       </div>
     </section>
-  )
-}
-
-function ContactItem({ label, value, href }: { label: string; value: string; href: string }) {
-  return (
-    <div>
-      <p className="text-[10px] tracking-[0.45em] uppercase text-gold mb-1.5">{label}</p>
-      <a
-        href={href}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="text-ink-soft hover:text-ink transition-colors text-sm tracking-wide italic break-all"
-      >
-        {value}
-      </a>
-    </div>
-  )
-}
-
-function StarburstSVG({ size }: { size: number }) {
-  const lines = Array.from({ length: 16 }, (_, i) => i)
-  const cx = size / 2
-  const cy = size / 2
-  const r1 = size * 0.42
-  const r2 = size * 0.18
-  return (
-    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} fill="none" aria-hidden>
-      {lines.map(i => {
-        const angle = (i / lines.length) * 2 * Math.PI - Math.PI / 2
-        const x1 = cx + r2 * Math.cos(angle)
-        const y1 = cy + r2 * Math.sin(angle)
-        const x2 = cx + r1 * Math.cos(angle)
-        const y2 = cy + r1 * Math.sin(angle)
-        return (
-          <line
-            key={i}
-            x1={x1}
-            y1={y1}
-            x2={x2}
-            y2={y2}
-            stroke="#a48752"
-            strokeWidth={i % 4 === 0 ? '1.5' : '0.5'}
-          />
-        )
-      })}
-      <circle cx={cx} cy={cy} r={3} stroke="#a48752" strokeWidth="0.8" fill="none" />
-    </svg>
   )
 }

@@ -1,5 +1,5 @@
 import { useState, useCallback, useMemo, useEffect } from 'react'
-import { onAuthStateChanged, signInWithPopup, signOut } from 'firebase/auth'
+import { onAuthStateChanged, signInWithRedirect, getRedirectResult, signOut } from 'firebase/auth'
 import type { User } from 'firebase/auth'
 import {
   collection,
@@ -16,8 +16,10 @@ import { DICT, LangContext, getStoredLang, storeLang } from './i18n'
 import type { Lang, TKey, Dict } from './i18n'
 import Nav from './components/Nav'
 import Hero from './components/Hero'
-import ServicesSection from './components/ServicesSection'
 import PortfolioSection from './components/PortfolioSection'
+import ArtistsSection from './components/ArtistsSection'
+import BrandsSection from './components/BrandsSection'
+import ServicesSection from './components/ServicesSection'
 import ContactSection from './components/ContactSection'
 import Lightbox from './components/Lightbox'
 import LoginPage from './components/LoginPage'
@@ -44,6 +46,18 @@ export default function App() {
       setUser(u)
       setAuthLoading(false)
     })
+  }, [])
+
+  // Handle redirect result after Google sign-in
+  useEffect(() => {
+    getRedirectResult(auth).then(result => {
+      if (!result) return
+      if (result.user.email === ADMIN_EMAIL) {
+        setPage('admin')
+      } else {
+        signOut(auth)
+      }
+    }).catch(() => {})
   }, [])
 
   // Firestore listeners
@@ -150,10 +164,7 @@ export default function App() {
 
   // ── Firebase auth actions ──
   const handleGoogleLogin = useCallback(async () => {
-    const result = await signInWithPopup(auth, googleProvider)
-    if (result.user.email === ADMIN_EMAIL) {
-      setPage('admin')
-    }
+    await signInWithRedirect(auth, googleProvider)
   }, [])
 
   const handleLogout = useCallback(async () => {
@@ -220,10 +231,13 @@ export default function App() {
           profile={profile}
           onLoginClick={() => (authed ? setPage('admin') : setPage('login'))}
           isAuthed={authed}
+          hideLinks={!!selectedProject}
         />
         <Hero profile={profile} />
-        <ServicesSection />
         <PortfolioSection projects={projects} categories={categories} onProjectClick={setSelectedProject} />
+        <ArtistsSection projects={projects} />
+        <BrandsSection />
+        <ServicesSection />
         <ContactSection profile={profile} />
         {selectedProject && (
           <Lightbox project={selectedProject} categories={categories} onClose={() => setSelectedProject(null)} />

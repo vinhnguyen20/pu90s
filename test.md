@@ -1,3 +1,5 @@
-mình muốn admin có thể tự thêm xóa sửa luôn ak
-
-và kiến trúc còn lại bạn làm như thế nào đó chobaor mật nhất đi ak
+lúc bên trong item sản phẩm mình muốn ẩn Portfolio
+Giới thiệu
+Nghệ sĩ
+Dịch vụ
+Liên hệ va đăng nhập
